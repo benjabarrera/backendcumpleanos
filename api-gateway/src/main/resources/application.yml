@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: evento-service
+          uri: lb://evento-service
+          predicates:
+            - Path=/api/v1/eventos/**, /api/v1/tipos-fiesta/**, /api/v1/menus/**
+        - id: cliente-service
+          uri: lb://cliente-service
+          predicates:
+            - Path=/api/v1/clientes/**
+        - id: personal-service
+          uri: lb://personal-service
+          predicates:
+            - Path=/api/v1/personal/**, /api/v1/roles-personal/**, /api/v1/asignaciones/**
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/v1/usuarios/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
