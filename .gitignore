@@ -1,0 +1,8 @@
+# Entorno local y herramientas
+.vscode/
+apache-maven-3.9.6/
+maven.zip
+
+# Archivos compilados de Java/Maven
+target/
+*/target/
