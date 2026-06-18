@@ -28,6 +28,7 @@ public class AsignacionPersonalServiceImpl implements AsignacionPersonalService 
     @Override
     public AsignacionPersonalResponse crear(AsignacionPersonalRequest request) {
         validarDuplicado(request.idEvento(), request.idPersonal());
+        validarTopeHorario(request.idPersonal(), request.fechaAsignacion(), request.horaEntrada(), request.horaSalida(), null);
         return toResponse(asignacionPersonalRepository.save(Objects.requireNonNull(toEntity(request))));
     }
 
@@ -35,6 +36,7 @@ public class AsignacionPersonalServiceImpl implements AsignacionPersonalService 
     public AsignacionPersonalResponse actualizar(Long idAsignacion, AsignacionPersonalRequest request) {
         AsignacionPersonal asignacion = getById(idAsignacion);
         validarDuplicado(request.idEvento(), request.idPersonal(), idAsignacion);
+        validarTopeHorario(request.idPersonal(), request.fechaAsignacion(), request.horaEntrada(), request.horaSalida(), idAsignacion);
         aplicar(asignacion, request);
         return toResponse(asignacionPersonalRepository.save(Objects.requireNonNull(asignacion)));
     }
@@ -85,6 +87,7 @@ public class AsignacionPersonalServiceImpl implements AsignacionPersonalService 
 
         asignacion.setIdEvento(request.idEvento());
         asignacion.setPersonal(personal);
+        asignacion.setFechaAsignacion(request.fechaAsignacion());
         asignacion.setHoraEntrada(request.horaEntrada());
         asignacion.setHoraSalida(request.horaSalida());
         asignacion.setHoraEntradaReal(request.horaEntradaReal());
@@ -108,6 +111,23 @@ public class AsignacionPersonalServiceImpl implements AsignacionPersonalService 
                 });
     }
 
+    private void validarTopeHorario(Long idPersonal, java.time.LocalDate fecha, java.time.LocalTime entrada, java.time.LocalTime salida, Long idAsignacionActual) {
+        if (fecha == null || entrada == null || salida == null) return;
+        
+        List<AsignacionPersonal> asignaciones = asignacionPersonalRepository.findByPersonal_IdPersonalAndFechaAsignacion(idPersonal, fecha);
+        for (AsignacionPersonal asignacion : asignaciones) {
+            if (idAsignacionActual != null && asignacion.getIdAsignacion().equals(idAsignacionActual)) {
+                continue;
+            }
+            if (asignacion.getHoraEntrada() != null && asignacion.getHoraSalida() != null) {
+                // Hay tope si (entrada < salida_existente) y (salida > entrada_existente)
+                if (entrada.isBefore(asignacion.getHoraSalida()) && salida.isAfter(asignacion.getHoraEntrada())) {
+                    throw new com.micumpleanos.personal.shared.exception.ConflictException("Tope de horario: El personal ya tiene una asignación en esa fecha y rango horario.");
+                }
+            }
+        }
+    }
+
     private AsignacionPersonalResponse toResponse(AsignacionPersonal asignacion) {
         return new AsignacionPersonalResponse(
                 asignacion.getIdAsignacion(),
@@ -116,6 +136,7 @@ public class AsignacionPersonalServiceImpl implements AsignacionPersonalService 
                 asignacion.getPersonal().getIdPersonal(),
                 asignacion.getPersonal().getNombre() + " " + asignacion.getPersonal().getApellido(),
                 asignacion.getPersonal().getRolPersonal().getNombre(),
+                asignacion.getFechaAsignacion(),
                 asignacion.getHoraEntrada(),
                 asignacion.getHoraSalida(),
                 asignacion.getHoraEntradaReal(),

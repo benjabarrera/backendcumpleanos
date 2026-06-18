@@ -2,6 +2,7 @@ package com.micumpleanos.personal.application.dto.asignacion;
 
 import com.micumpleanos.personal.domain.enums.EstadoAsignacion;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record AsignacionPersonalResponse(
@@ -9,8 +10,9 @@ public record AsignacionPersonalResponse(
         Long idEvento,
         String eventoNombre,
         Long idPersonal,
-        String personalNombre,
+        String nombrePersonal,
         String rolPersonal,
+        LocalDate fechaAsignacion,
         LocalTime horaEntrada,
         LocalTime horaSalida,
         LocalTime horaEntradaReal,

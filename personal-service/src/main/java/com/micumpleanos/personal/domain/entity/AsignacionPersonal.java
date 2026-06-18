@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 @Entity
@@ -40,6 +41,9 @@ public class AsignacionPersonal extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_personal", nullable = false)
     private Personal personal;
+
+    @Column(name = "fecha_asignacion", nullable = false)
+    private LocalDate fechaAsignacion;
 
     @Column(name = "hora_entrada")
     private LocalTime horaEntrada;

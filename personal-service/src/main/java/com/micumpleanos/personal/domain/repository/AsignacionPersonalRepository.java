@@ -17,4 +17,6 @@ public interface AsignacionPersonalRepository extends JpaRepository<AsignacionPe
 
     @EntityGraph(attributePaths = {"personal", "personal.rolPersonal"})
     List<AsignacionPersonal> findAllByEstado(EstadoAsignacion estado);
+
+    List<AsignacionPersonal> findByPersonal_IdPersonalAndFechaAsignacion(Long idPersonal, java.time.LocalDate fechaAsignacion);
 }
