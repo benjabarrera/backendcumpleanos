@@ -16,6 +16,30 @@ El proyecto se desarrolla bajo una arquitectura desacoplada, siguiendo el están
 
 ---
 
+## 🧮 Motor de Cálculo de Presupuesto
+
+El sistema cuenta con un motor de lógica matemática para la generación de presupuestos automáticos, diseñado para minimizar el error humano y acelerar la respuesta al cliente.
+
+### Variables de Entrada
+El motor procesa las siguientes variables capturadas desde el formulario:
+* $N$: Cantidad de niños asistentes.
+* $T_{base}$: Precio base del paquete de cumpleaños (según tipo de fiesta).
+* $C_{u}$: Costo unitario por niño (incluye dulces, material didáctico, etc.).
+* $\sum E$: Sumatoria de elementos logísticos adicionales o "sorpresas".
+
+### Lógica de Procesamiento
+El costo total ($Total$) se calcula mediante la siguiente función de negocio:
+
+$$Total = T_{base} + (N \times C_{u}) + \sum E$$
+
+### Flujo del Motor
+1.  **Captura:** Validación de entrada de la variable $N$ desde el formulario.
+2.  **Cálculo:** Ejecución de la lógica en el `EventoService` del Backend.
+3.  **Consolidación:** Ajuste de presupuesto según reglas de negocio (tipo de fiesta).
+4.  **Retorno:** Serialización en JSON para visualización inmediata en la interfaz.
+
+---
+
 ## 🛠 Arquitectura del Sistema
 El sistema se divide en cuatro capas lógicas para asegurar la separación de responsabilidades:
 
@@ -54,5 +78,5 @@ El modelamiento del sistema se encuentra bajo estándares UML 2.0 y está dispon
 ---
 
 ## 👤 Equipo de Desarrollo
-* [Tu Nombre/Equipo]
+* Benjamin Barrera | Christian Fuentes
 * Proyecto de Titulación - 2026
